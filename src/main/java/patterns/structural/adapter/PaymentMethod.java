@@ -1,4 +1,4 @@
 package main.java.patterns.structural.adapter;
 
-public class PaymentMethod {
+public interface PaymentMethod {
 }
