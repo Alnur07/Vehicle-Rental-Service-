@@ -8,6 +8,7 @@ public class BookingBuilder {
     private String customerName;
     private Vehicle vehicle;
     private int rentalDays;
+    private int rentalHours;
 
     public BookingBuilder setBookingId(String bookingId) {
         this.bookingId = bookingId;
@@ -28,7 +29,12 @@ public class BookingBuilder {
         this.rentalDays = rentalDays;
         return this;
     }
+
+    public BookingBuilder setRentalHours(int rentalHours) {
+        this.rentalHours = rentalHours;
+        return this;
+    }
     public Booking build(){
-        return new Booking(bookingId, customerName,vehicle,rentalDays);
+        return new Booking(bookingId, customerName,vehicle,rentalDays,rentalHours);
     }
 }
