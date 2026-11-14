@@ -16,33 +16,18 @@ public class RentalFacade {
     private final PaymentMethod paymentMethod;
     private final RentalAvailability rentalAvailability;
 
-    public RentalFacade(
-            PricingCalculator pricingCalculator,
-            PaymentMethod paymentMethod,
-            RentalAvailability rentalAvailability) {
+    public RentalFacade(PricingCalculator pricingCalculator,PaymentMethod paymentMethod,RentalAvailability rentalAvailability) {
 
-        this.pricingCalculator = Objects.requireNonNull(
-                pricingCalculator,
-                "PricingCalculator cannot be null"
-        );
+        this.pricingCalculator = Objects.requireNonNull(pricingCalculator,"PricingCalculator cannot be null");
 
-        this.paymentMethod = Objects.requireNonNull(
-                paymentMethod,
-                "PaymentMethod cannot be null"
-        );
+        this.paymentMethod = Objects.requireNonNull(paymentMethod,"PaymentMethod cannot be null");
 
-        this.rentalAvailability = Objects.requireNonNull(
-                rentalAvailability,
-                "RentalAvailability cannot be null"
-        );
+        this.rentalAvailability = Objects.requireNonNull(rentalAvailability,"RentalAvailability cannot be null");
     }
 
     public boolean rentVehicle(Booking booking) {
 
-        Objects.requireNonNull(
-                booking,
-                "Booking cannot be null"
-        );
+        Objects.requireNonNull(booking,"Booking cannot be null");
 
         Vehicle vehicle = booking.getVehicle();
 
@@ -51,24 +36,19 @@ public class RentalFacade {
             return false;
         }
 
-        int duration;
+        double totalPrice;
 
-        if (booking.getRentalHours() > 0) {
+        if (booking.getRentalHours() > 0 && booking.getRentalDays() == 0) {
 
-            duration = booking.getRentalHours();
+            totalPrice = pricingCalculator.calculateHourlyPrice(vehicle,booking.getRentalHours());
 
-        } else if (booking.getRentalDays() > 0) {
-            duration = booking.getRentalDays();
-
-        } else {
+        } else if (booking.getRentalDays() > 0 && booking.getRentalHours() == 0) {
+            totalPrice = pricingCalculator.calculateDailyPrice(vehicle,booking.getRentalDays());
+        }
+        else {
             System.out.println("Invalid rental duration.");
             return false;
         }
-
-        double totalPrice = pricingCalculator.calculatePrice(
-                vehicle,
-                duration
-        );
 
         if (!Double.isFinite(totalPrice) || totalPrice <= 0) {
             System.out.println("Invalid rental price.");
@@ -84,7 +64,7 @@ public class RentalFacade {
             return false;
         }
 
-        rentalAvailability.updateAvailability(vehicle, false);
+        rentalAvailability.updateAvailability(vehicle,false);
 
         System.out.println("Vehicle rented successfully!");
 
@@ -93,10 +73,7 @@ public class RentalFacade {
 
     public void returnVehicle(Vehicle vehicle) {
 
-        Objects.requireNonNull(
-                vehicle,
-                "Vehicle cannot be null"
-        );
+        Objects.requireNonNull(vehicle,"Vehicle cannot be null");
 
         if (vehicle.isAvailable()) {
             System.out.println("Vehicle is already available.");
