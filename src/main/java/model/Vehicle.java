@@ -9,6 +9,22 @@ public abstract class Vehicle {
     private boolean available;
 
     public Vehicle(String id, String brand, String model, double pricePerHour) {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("Vehicle ID cannot be empty");
+        }
+
+        if (brand == null || brand.isBlank()) {
+            throw new IllegalArgumentException("Brand cannot be empty");
+        }
+
+        if (model == null || model.isBlank()) {
+            throw new IllegalArgumentException("Model cannot be empty");
+        }
+
+        if (pricePerHour <= 0 || !Double.isFinite(pricePerHour)) {
+            throw new IllegalArgumentException("Price must be positive");
+        }
+
         this.id = id;
         this.brand = brand;
         this.model = model;
