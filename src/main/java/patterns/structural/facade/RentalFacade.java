@@ -1,7 +1,9 @@
+
 package main.java.patterns.structural.facade;
 
 import main.java.model.Booking;
 import main.java.model.Vehicle;
+
 import main.java.patterns.structural.adapter.PaymentMethod;
 import main.java.patterns.behavioral.observer.RentalAvailability;
 import main.java.patterns.behavioral.strategy.PricingCalculator;
@@ -9,6 +11,7 @@ import main.java.patterns.behavioral.strategy.PricingCalculator;
 import java.util.Objects;
 
 public class RentalFacade {
+
     private final PricingCalculator pricingCalculator;
     private final PaymentMethod paymentMethod;
     private final RentalAvailability rentalAvailability;
@@ -35,7 +38,11 @@ public class RentalFacade {
     }
 
     public boolean rentVehicle(Booking booking) {
-        Objects.requireNonNull(booking,"Booking cannot be null");
+
+        Objects.requireNonNull(
+                booking,
+                "Booking cannot be null"
+        );
 
         Vehicle vehicle = booking.getVehicle();
 
@@ -44,7 +51,24 @@ public class RentalFacade {
             return false;
         }
 
-        double totalPrice = pricingCalculator.calculatePrice(vehicle,booking.getRentalDays());
+        int duration;
+
+        if (booking.getRentalHours() > 0) {
+
+            duration = booking.getRentalHours();
+
+        } else if (booking.getRentalDays() > 0) {
+            duration = booking.getRentalDays();
+
+        } else {
+            System.out.println("Invalid rental duration.");
+            return false;
+        }
+
+        double totalPrice = pricingCalculator.calculatePrice(
+                vehicle,
+                duration
+        );
 
         if (!Double.isFinite(totalPrice) || totalPrice <= 0) {
             System.out.println("Invalid rental price.");
@@ -63,12 +87,15 @@ public class RentalFacade {
         rentalAvailability.updateAvailability(vehicle, false);
 
         System.out.println("Vehicle rented successfully!");
+
         return true;
     }
 
     public void returnVehicle(Vehicle vehicle) {
 
-        Objects.requireNonNull(vehicle,"Vehicle cannot be null"
+        Objects.requireNonNull(
+                vehicle,
+                "Vehicle cannot be null"
         );
 
         if (vehicle.isAvailable()) {
